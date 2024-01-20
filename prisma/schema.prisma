@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Arquivo onde ficam as models (no nosso caso representam as tabelas do nosso banco)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// @@ => configura a Model
+// @ => configura a coluna
+model User {
+  id    String @id @default(uuid()) // obrigatório ter um campo id em todas as models
+  name  String
+  email String @unique
+
+  @@map("users") // Serve para renomer a tabela no banco
+}
