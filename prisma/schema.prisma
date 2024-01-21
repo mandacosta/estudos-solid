@@ -11,11 +11,12 @@ datasource db {
 // @@ => configura a Model
 // @ => configura a coluna
 model User {
-  id            String   @id @default(uuid()) // obrigatório ter um campo id em todas as models
+  id            String    @id @default(uuid()) // obrigatório ter um campo id em todas as models
   name          String
-  email         String   @unique
-  password_hash String
-  created_at    DateTime @default(now())
+  email         String    @unique
+  password_hash String // Hashing é diferente de criptografia, pois não tem como desfazer a hash.
+  created_at    DateTime  @default(now())
+  checkIns      CheckIn[]
 
   @@map("users") // Serve para renomer a tabela no banco
 }
@@ -24,17 +25,22 @@ model CheckIn {
   id           String    @id @default(uuid())
   created_at   DateTime  @default(now())
   validated_at DateTime? // Já indica se foi validado ou não e quando, melhor que booleano
+  user         User      @relation(fields: [user_id], references: [id])
+  user_id      String
+  gym          Gym       @relation(fields: [gym_id], references: [id])
+  gym_id       String
 
   @@map("check_ins")
 }
 
 model Gym {
-  id          String  @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
   phone       String?
   latitude    Decimal // Para os cálculos relacionados à proximidade do usuário na hora de fazer checkin
   longitude   Decimal
+  checkIns    CheckIn[]
 
   @@map("gyms")
 }
