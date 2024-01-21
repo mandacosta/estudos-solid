@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Arquivo onde ficam as models (no nosso caso representam as tabelas do nosso banco)
 generator client {
   provider = "prisma-client-js"
@@ -14,9 +11,30 @@ datasource db {
 // @@ => configura a Model
 // @ => configura a coluna
 model User {
-  id    String @id @default(uuid()) // obrigatório ter um campo id em todas as models
-  name  String
-  email String @unique
+  id            String   @id @default(uuid()) // obrigatório ter um campo id em todas as models
+  name          String
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
 
   @@map("users") // Serve para renomer a tabela no banco
+}
+
+model CheckIn {
+  id           String    @id @default(uuid())
+  created_at   DateTime  @default(now())
+  validated_at DateTime? // Já indica se foi validado ou não e quando, melhor que booleano
+
+  @@map("check_ins")
+}
+
+model Gym {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  phone       String?
+  latitude    Decimal // Para os cálculos relacionados à proximidade do usuário na hora de fazer checkin
+  longitude   Decimal
+
+  @@map("gyms")
 }
