@@ -1,3 +1,4 @@
+import { IUserRepository } from '@/repositories/interface-users-repository'
 import { hash } from 'bcryptjs'
 
 interface UserRegister {
@@ -7,10 +8,10 @@ interface UserRegister {
 }
 
 export class RegisterUsersCase {
-  constructor(private UsersRepository: any) {}
+  constructor(private UsersRepository: IUserRepository) {}
 
   async execute({ name, email, password }: UserRegister) {
-    const userWithSameEmail = await this.UsersRepository.findUnique(email)
+    const userWithSameEmail = await this.UsersRepository.findByEmail(email)
 
     if (userWithSameEmail) {
       throw new Error('Email already being used.')
