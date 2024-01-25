@@ -8,7 +8,7 @@ interface UserRegister {
   password: string
 }
 
-export class RegisterUsersCase {
+export class RegisterUseCase {
   constructor(private UsersRepository: IUserRepository) {}
 
   async execute({ name, email, password }: UserRegister) {
