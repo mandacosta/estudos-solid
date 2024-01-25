@@ -1,14 +1,19 @@
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, beforeEach } from 'vitest'
 import { RegisterUseCase } from './register'
 import { compare } from 'bcryptjs'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
+import { IUserRepository } from '@/repositories/interface-users-repository'
+
+let userRepository: IUserRepository
+let registerUseCase: RegisterUseCase
 
 describe('Register Use-Case', () => {
+  beforeEach(() => {
+    userRepository = new InMemoryUsersRepository()
+    registerUseCase = new RegisterUseCase(userRepository)
+  })
   it("should properly hash the user's password", async () => {
-    const userRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(userRepository)
-
     const user_ = {
       name: 'Mariazinha',
       email: 'maria@gmail.com',
@@ -26,9 +31,6 @@ describe('Register Use-Case', () => {
   })
 
   it('should not allow email duplicity', async () => {
-    const userRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(userRepository)
-
     const user1 = {
       name: 'Mariazinha',
       email: 'maria@gmail.com',
@@ -43,9 +45,6 @@ describe('Register Use-Case', () => {
   })
 
   it('should register user', async () => {
-    const userRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(userRepository)
-
     const user_ = {
       name: 'Mariazinha',
       email: 'maria@gmail.com',
