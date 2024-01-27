@@ -33,6 +33,7 @@ describe('Check-In Use-Case', () => {
     // Depois de cada teste, o Vitest vai voltar a utlizar as datas reais.
     vi.useRealTimers()
   })
+
   it('should be able to checkin', async () => {
     vi.setSystemTime(new Date(1994, 9, 24, 0, 15, 0))
     const { checkIn } = await checkInUseCase.execute({
@@ -87,5 +88,27 @@ describe('Check-In Use-Case', () => {
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
+  })
+
+  it('should not be able to check in on distant gyms', async () => {
+    gymsRepository.repository.push({
+      id: 'gym_02',
+      title: 'Academia das maravilhas',
+      description: '',
+      phone: '',
+      latitude: new Decimal(-23.5473584),
+      longitude: new Decimal(-46.6111464),
+    })
+
+    vi.setSystemTime(new Date(1994, 9, 24, 0, 15, 0))
+
+    await expect(() =>
+      checkInUseCase.execute({
+        gymId: 'gym_02',
+        userId: 'user_01',
+        userLatitude: -23.5551778,
+        userLongitude: -46.6058009,
+      }),
+    ).rejects.toBeInstanceOf(Error)
   })
 })
