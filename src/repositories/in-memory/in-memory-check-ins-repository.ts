@@ -5,6 +5,10 @@ import dayjs from 'dayjs'
 
 export class InMemoryCheckInsRepository implements ICheckInsRepository {
   public repository: CheckIn[] = []
+  async findManyByUserId(userId: string) {
+    return this.repository.filter((checkin) => checkin.user_id === userId)
+  }
+
   async findByUserIdOnDate(userId: string, date: Date) {
     const startOfTheDay = dayjs(date).startOf('date')
     const endOfTheDay = dayjs(date).endOf('date')
