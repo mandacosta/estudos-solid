@@ -5,6 +5,8 @@ import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-c
 import { IGymRepository } from '@/repositories/interface-gyms-repository'
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository'
 import { Decimal } from '@prisma/client/runtime/library'
+import { MaxNumberOfCheckins } from './errors/max-number-of-check-ins-error'
+import { MaxDistanceError } from './errors/max-distance-error'
 
 let checkInRepository: InMemoryCheckInsRepository
 let gymsRepository: InMemoryGymsRepository
@@ -66,7 +68,7 @@ describe('Check-In Use-Case', () => {
         userLatitude: 1,
         userLongitude: 1,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxNumberOfCheckins)
   })
 
   it('should be able to check in twice in different days', async () => {
@@ -91,13 +93,13 @@ describe('Check-In Use-Case', () => {
   })
 
   it('should not be able to check in on distant gyms', async () => {
-    gymsRepository.repository.push({
+    await gymsRepository.create({
       id: 'gym_02',
       title: 'Academia das maravilhas',
       description: '',
       phone: '',
-      latitude: new Decimal(-23.5473584),
-      longitude: new Decimal(-46.6111464),
+      latitude: -23.5473584,
+      longitude: -46.6111464,
     })
 
     vi.setSystemTime(new Date(1994, 9, 24, 0, 15, 0))
@@ -109,6 +111,6 @@ describe('Check-In Use-Case', () => {
         userLatitude: -23.5551778,
         userLongitude: -46.6058009,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxDistanceError)
   })
 })
