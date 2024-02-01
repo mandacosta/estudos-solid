@@ -8,7 +8,7 @@ export class InMemoryCheckInsRepository implements ICheckInsRepository {
   async findManyByUserId(userId: string, page: number) {
     return this.repository
       .filter((checkin) => checkin.user_id === userId)
-      .slice((page - 1) * 20, page * 20)
+      .slice((page - 1) * 20, page * 20) // índice inicial e final
   }
 
   async findByUserIdOnDate(userId: string, date: Date) {
@@ -42,5 +42,10 @@ export class InMemoryCheckInsRepository implements ICheckInsRepository {
     this.repository.push(checkIn)
 
     return checkIn
+  }
+
+  async countByUserId(userId: string) {
+    return this.repository.filter((checkin) => checkin.user_id === userId)
+      .length
   }
 }
