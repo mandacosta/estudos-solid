@@ -1,10 +1,28 @@
 import { Gym, Prisma } from '@prisma/client'
-import { IGymRepository } from '../interface-gyms-repository'
+import {
+  IFindManyNearByRequest,
+  IGymRepository,
+} from '../interface-gyms-repository'
 import { Decimal } from '@prisma/client/runtime/library'
 import { randomUUID } from 'crypto'
+import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
 
 export class InMemoryGymsRepository implements IGymRepository {
   public repository: Gym[] = []
+
+  async findManyNearBy(data: IFindManyNearByRequest) {
+    return this.repository.filter((gym) => {
+      const distance = getDistanceBetweenCoordinates(
+        { latitude: data.latitude, longitude: data.longitude },
+        {
+          latitude: gym.latitude.toNumber(),
+          longitude: gym.longitude.toNumber(),
+        },
+      )
+      return distance < 10
+    })
+  }
+
   async searchMany(query: string, page: number) {
     return this.repository
       .filter((item) => item.title.includes(query))
