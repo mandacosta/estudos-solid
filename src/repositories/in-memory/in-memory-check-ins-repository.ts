@@ -5,6 +5,21 @@ import dayjs from 'dayjs'
 
 export class InMemoryCheckInsRepository implements ICheckInsRepository {
   public repository: CheckIn[] = []
+
+  async save(checkin: CheckIn) {
+    const checkInIndex = this.repository.findIndex(
+      (item) => item.id === checkin.id,
+    )
+
+    this.repository.splice(checkInIndex, 1, checkin)
+
+    return checkin
+  }
+
+  async findById(id: string) {
+    return this.repository.find((checkin) => checkin.id === id) ?? null
+  }
+
   async findManyByUserId(userId: string, page: number) {
     return this.repository
       .filter((checkin) => checkin.user_id === userId)
