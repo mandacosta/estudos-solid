@@ -8,7 +8,6 @@ export async function profile(request: FastifyRequest, reply: FastifyReply) {
   const { user } = await getUserProfileUseCase.execute({
     userId,
   })
-  console.log(userId)
   return reply.status(200).send({
     user,
   })
