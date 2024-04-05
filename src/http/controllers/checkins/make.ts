@@ -6,9 +6,10 @@ import { MaxDistanceError } from '@/use-cases/errors/max-distance-error'
 
 export async function make(request: FastifyRequest, reply: FastifyReply) {
   try {
+    const paramSchema = z.object({
+      gymId: z.string().uuid(),
+    })
     const schema = z.object({
-      userId: z.string(),
-      gymId: z.string(),
       latitude: z.number().refine((value) => {
         return Math.abs(value) <= 90
       }),
@@ -17,11 +18,12 @@ export async function make(request: FastifyRequest, reply: FastifyReply) {
       }),
     })
 
-    const { userId, gymId, latitude, longitude } = schema.parse(request.body)
+    const { latitude, longitude } = schema.parse(request.body)
+    const { gymId } = paramSchema.parse(request.params)
 
     const useCase = makeCheckInUseCase()
     const { checkIn } = await useCase.execute({
-      userId,
+      userId: request.user.sub,
       gymId,
       userLatitude: latitude,
       userLongitude: longitude,

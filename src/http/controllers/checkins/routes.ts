@@ -7,7 +7,7 @@ import { history } from './history'
 export async function checkInsRoutes(app: FastifyInstance) {
   app.addHook('onRequest', verifyJwt)
 
-  app.post('/make', make)
-  app.post('/validate', validate)
+  app.post('/gyms/:gymId/checkin', make)
+  app.patch('/validate/:checkinId', validate)
   app.post('/history', history)
 }

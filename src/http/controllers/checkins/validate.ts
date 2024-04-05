@@ -7,16 +7,16 @@ import { LateCheckInValidationError } from '@/use-cases/errors/late-checkin-vali
 export async function validate(request: FastifyRequest, reply: FastifyReply) {
   try {
     const schema = z.object({
-      checkInId: z.string(),
+      checkinId: z.string().uuid(),
     })
 
-    const { checkInId } = schema.parse(request.body)
+    const { checkinId } = schema.parse(request.params)
 
     const useCase = makeValidateCheckInUseCase()
     const { checkIn } = await useCase.execute({
-      checkInId,
+      checkInId: checkinId,
     })
-    return reply.status(201).send(checkIn)
+    return reply.status(204).send()
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: error.message })
