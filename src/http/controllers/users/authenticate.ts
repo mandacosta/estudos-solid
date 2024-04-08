@@ -23,6 +23,26 @@ export async function authenticate(
         sub: user.id,
       },
     )
+
+    // const refreshToken = await reply.jwtSign(
+    //   {},
+    //   {
+    //     sub: user.id,
+    //     expiresIn: '7d',
+    //   },
+    // )
+    // return reply
+    //   .setCookie('refreshToken', refreshToken, {
+    //     path: '/',
+    //     secure: true,
+    //     sameSite: true,
+    //     httpOnly: true,
+    //   })
+    //   .status(200)
+    //   .send({
+    //     token,
+    //   })
+
     return reply.status(200).send({
       token,
     })
