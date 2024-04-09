@@ -6,7 +6,7 @@ import { env } from './env'
 import fastifyJwt from '@fastify/jwt'
 import { gymsRoutes } from './http/controllers/gyms/routes'
 import { checkInsRoutes } from './http/controllers/checkins/routes'
-
+//
 export const app = fastify()
 
 app.register(fastifyJwt, {
