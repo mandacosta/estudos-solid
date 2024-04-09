@@ -10,11 +10,18 @@ datasource db {
 
 // @@ => configura a Model
 // @ => configura a coluna
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
 model User {
   id            String    @id @default(uuid()) // obrigatório ter um campo id em todas as models
   name          String
   email         String    @unique
   password_hash String // Hashing é diferente de criptografia, pois não tem como desfazer a hash.
+  role          Role      @default(MEMBER)
   created_at    DateTime  @default(now())
   checkIns      CheckIn[]
 
